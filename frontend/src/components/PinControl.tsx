@@ -17,7 +17,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
   const [outputValue, setOutputValue] = useState<0 | 1>(0);
   const [pwmDutyCycle, setPwmDutyCycle] = useState<number>(0);
   const [pwmFrequency, setPwmFrequency] = useState<number>(1000);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +34,14 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
   }, [pinInfo]);
 
   const handleConfigure = async () => {
-    setLoading(true);
+    console.log('[PinControl] Configure started, active element:', document.activeElement?.tagName);
+
+    // Explicitly blur any focused element to prevent focus issues on re-render
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    console.log('[PinControl] After blur, active element:', document.activeElement?.tagName);
+
     setError(null);
 
     try {
@@ -46,55 +52,48 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
         pwm_frequency: mode === 'pwm' ? pwmFrequency : undefined
       };
 
+      console.log('[PinControl] Calling API...');
       await gpioApi.configurePin(pin, config);
+      console.log('[PinControl] API returned successfully');
       onPinUpdated();
+      console.log('[PinControl] onPinUpdated called');
     } catch (err: any) {
+      console.error('[PinControl] Error:', err);
       setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleWrite = async (value: 0 | 1) => {
-    setLoading(true);
     setError(null);
 
     try {
       await gpioApi.writePin(pin, value);
       setOutputValue(value);
-      onPinUpdated();
+      setTimeout(() => onPinUpdated(), 100);
     } catch (err: any) {
       setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handlePWMUpdate = async () => {
-    setLoading(true);
     setError(null);
 
     try {
       await gpioApi.setPWM(pin, { duty_cycle: pwmDutyCycle, frequency: pwmFrequency });
-      onPinUpdated();
+      setTimeout(() => onPinUpdated(), 100);
     } catch (err: any) {
       setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleCleanup = async () => {
-    setLoading(true);
     setError(null);
 
     try {
       await gpioApi.cleanupPin(pin);
-      onPinUpdated();
+      setTimeout(() => onPinUpdated(), 100);
     } catch (err: any) {
       setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -127,7 +126,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
               className="cyber-select"
               value={mode}
               onChange={(e) => setMode(e.target.value as any)}
-              disabled={loading}
             >
               <option value="input">INPUT</option>
               <option value="output">OUTPUT</option>
@@ -144,7 +142,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                 className="cyber-select"
                 value={pull}
                 onChange={(e) => setPull(e.target.value as any)}
-                disabled={loading}
               >
                 <option value="none">NONE</option>
                 <option value="up">PULL UP</option>
@@ -162,14 +159,12 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                 <button
                   className={`cyber-button ${outputValue === 0 ? 'active' : ''}`}
                   onClick={() => setOutputValue(0)}
-                  disabled={loading}
                 >
                   LOW
                 </button>
                 <button
                   className={`cyber-button ${outputValue === 1 ? 'active' : ''}`}
                   onClick={() => setOutputValue(1)}
-                  disabled={loading}
                 >
                   HIGH
                 </button>
@@ -189,7 +184,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                 onChange={(e) => setPwmFrequency(parseInt(e.target.value) || 1000)}
                 min="1"
                 max="100000"
-                disabled={loading}
               />
             </div>
           )}
@@ -197,10 +191,9 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
           <button
             className="cyber-button"
             onClick={handleConfigure}
-            disabled={loading}
             style={{ width: '100%' }}
           >
-            {loading ? 'CONFIGURING...' : 'CONFIGURE PIN'}
+            CONFIGURE PIN
           </button>
         </>
       ) : (
@@ -242,7 +235,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                 <button
                   className="cyber-button"
                   onClick={() => handleWrite(0)}
-                  disabled={loading}
                   style={{ flex: 1 }}
                 >
                   SET LOW
@@ -250,7 +242,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                 <button
                   className="cyber-button"
                   onClick={() => handleWrite(1)}
-                  disabled={loading}
                   style={{ flex: 1 }}
                 >
                   SET HIGH
@@ -273,7 +264,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                   value={pwmDutyCycle}
                   onChange={(e) => setPwmDutyCycle(parseFloat(e.target.value))}
                   style={{ width: '100%' }}
-                  disabled={loading}
                 />
               </div>
 
@@ -288,14 +278,12 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
                   onChange={(e) => setPwmFrequency(parseInt(e.target.value) || 1000)}
                   min="1"
                   max="100000"
-                  disabled={loading}
                 />
               </div>
 
               <button
                 className="cyber-button"
                 onClick={handlePWMUpdate}
-                disabled={loading}
                 style={{ width: '100%' }}
               >
                 UPDATE PWM
@@ -306,7 +294,6 @@ export const PinControl: React.FC<PinControlProps> = ({ pin, pinInfo, onPinUpdat
           <button
             className="cyber-button danger"
             onClick={handleCleanup}
-            disabled={loading}
             style={{ width: '100%' }}
           >
             RELEASE PIN

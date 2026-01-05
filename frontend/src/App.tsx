@@ -15,7 +15,7 @@ function App() {
   const [selectedPin, setSelectedPin] = useState<number | null>(null);
   const [selectedPinInfo, setSelectedPinInfo] = useState<PinInfo | null>(null);
   const [connected, setConnected] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Load pins on mount
@@ -59,7 +59,6 @@ function App() {
   };
 
   const loadPins = async () => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -70,7 +69,7 @@ function App() {
     } catch (err: any) {
       setError(err.message || 'Failed to load pins');
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
     }
   };
 
@@ -78,7 +77,15 @@ function App() {
     setSelectedPin(pin === selectedPin ? null : pin);
   };
 
-  const handlePinUpdated = () => {
+  const handlePinUpdated = async () => {
+    // Blur any focused element before updating
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    // Wait a tick to ensure blur completes
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     loadPins();
   };
 
@@ -103,7 +110,7 @@ function App() {
     }
   };
 
-  if (loading) {
+  if (initialLoading) {
     return (
       <div style={{
         display: 'flex',
@@ -120,12 +127,13 @@ function App() {
   }
 
   return (
-    <div>
-      {/* Cyberpunk background effects */}
-      <div className="cyber-grid-bg"></div>
-      <div className="cyber-scanline"></div>
+    <div style={{ position: 'relative', minHeight: '100vh', width: '100%' }}>
+      {/* Temporarily disable background animations for debugging
+      <div className="cyber-grid-bg" style={{ pointerEvents: 'none' }}></div>
+      <div className="cyber-scanline" style={{ pointerEvents: 'none' }}></div>
+      */}
 
-      <div style={{ position: 'relative', zIndex: 10, height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'relative', minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
         <header className="cyber-header">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
@@ -180,31 +188,35 @@ function App() {
           </div>
         )}
 
-        {/* Main content */}
+        {/* Main content - Side by side layout */}
         <main style={{
           flex: 1,
-          overflow: 'auto',
           padding: '20px',
-          display: 'grid',
-          gridTemplateColumns: selectedPin ? '1fr 400px' : '1fr',
-          gap: '20px'
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '20px',
+          overflow: 'hidden'
         }}>
-          {/* Pin selector */}
-          <PinSelector
-            availablePins={availablePins}
-            configuredPins={configuredPins}
-            reservedPins={reservedPins}
-            selectedPin={selectedPin}
-            onSelectPin={handlePinSelect}
-          />
-
-          {/* Pin control panel */}
-          {selectedPin && (
-            <PinControl
-              pin={selectedPin}
-              pinInfo={selectedPinInfo}
-              onPinUpdated={handlePinUpdated}
+          {/* Pin selector - Left side */}
+          <div style={{ flex: 1, minWidth: 0, overflow: 'auto' }}>
+            <PinSelector
+              availablePins={availablePins}
+              configuredPins={configuredPins}
+              reservedPins={reservedPins}
+              selectedPin={selectedPin}
+              onSelectPin={handlePinSelect}
             />
+          </div>
+
+          {/* Pin control panel - Right side */}
+          {selectedPin && (
+            <div style={{ width: '350px', flexShrink: 0, overflow: 'auto' }}>
+              <PinControl
+                pin={selectedPin}
+                pinInfo={selectedPinInfo}
+                onPinUpdated={handlePinUpdated}
+              />
+            </div>
           )}
         </main>
 

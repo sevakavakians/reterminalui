@@ -5,7 +5,10 @@
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// Use relative URL when served from same origin, fallback to localhost
+const API_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('192.168.0.3')
+  ? window.location.origin
+  : (process.env.REACT_APP_API_URL || 'http://localhost:5000');
 
 export interface PinInfo {
   pin: number;
@@ -40,6 +43,9 @@ export interface PWMRequest {
   frequency?: number;
 }
 
+// Configure axios with timeout
+axios.defaults.timeout = 10000; // 10 second timeout
+
 class GPIOApiService {
   private socket: Socket | null = null;
   private connectionCallbacks: Array<(connected: boolean) => void> = [];
@@ -49,8 +55,13 @@ class GPIOApiService {
    * Get health status of the API
    */
   async getHealth(): Promise<{ status: string; message: string }> {
-    const response = await axios.get(`${API_BASE_URL}/api/health`);
-    return response.data;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/health`, { timeout: 5000 });
+      return response.data;
+    } catch (error: any) {
+      console.error('Health check failed:', error);
+      throw new Error(error.response?.data?.error || error.message || 'Failed to connect to API');
+    }
   }
 
   /**

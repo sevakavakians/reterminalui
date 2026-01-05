@@ -46,6 +46,9 @@ export const PinSelector: React.FC<PinSelectorProps> = ({
     }
   };
 
+  // Show all GPIO pins 2-27
+  const allPins = Array.from({ length: 26 }, (_, i) => i + 2);
+
   return (
     <div className="cyber-panel fade-in">
       <h2 className="cyber-glow-text" style={{ marginBottom: '16px' }}>
@@ -53,7 +56,7 @@ export const PinSelector: React.FC<PinSelectorProps> = ({
       </h2>
 
       <div className="pin-grid">
-        {availablePins.map(pin => {
+        {allPins.map(pin => {
           const status = getPinStatus(pin);
           const pinInfo = getPinInfo(pin);
           const isReserved = status === 'reserved';

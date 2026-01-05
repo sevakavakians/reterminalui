@@ -3,7 +3,7 @@ GPIO Controller - Hardware abstraction layer for Raspberry Pi GPIO
 Provides safe, high-level interface for GPIO operations
 """
 import platform
-from typing import Dict, List, Optional, Literal
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 
@@ -99,10 +99,10 @@ class GPIOController:
     """
 
     # Pins that are unavailable due to hardware conflicts
-    RESERVED_PINS = {6, 13}  # Used by USB hub on reTerminal
+    RESERVED_PINS = {2, 3, 6, 13}  # GPIO 2&3: I2C (touchscreen), GPIO 6&13: USB hub
 
     # Safe GPIO pins (BCM numbering)
-    SAFE_PINS = {2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
+    SAFE_PINS = {4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
 
     # Maximum safe current per pin (mA)
     MAX_CURRENT_PER_PIN = 16
