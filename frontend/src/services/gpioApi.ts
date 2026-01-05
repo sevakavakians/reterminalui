@@ -24,14 +24,14 @@ export interface PinsResponse {
   reserved_pins: number[];
 }
 
-export interface ConfigurePin Request {
+export interface ConfigurePinRequest {
   mode: 'input' | 'output' | 'pwm';
   pull?: 'none' | 'up' | 'down';
   initial_value?: 0 | 1;
   pwm_frequency?: number;
 }
 
-export interface WriteValue Request {
+export interface WriteValueRequest {
   value: 0 | 1;
 }
 
