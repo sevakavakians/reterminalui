@@ -1,129 +1,147 @@
 # Daily Backlog
 
-**Date**: 2026-01-05
-**Sprint Focus**: Core GPIO UI Implementation
+**Date**: 2026-01-05 (Updated after architectural pivot)
+**Sprint Focus**: React Frontend with Arwes UI
 **Estimated Capacity**: TBD
 
 ## High Priority (Do Today)
 
-### 1. Verify Python Dependencies on reTerminal
-**Estimate**: 15 minutes
-**Dependencies**: None
-**Description**: SSH to reTerminal and verify installation status of matplotlib, pandas, numpy. Install if missing.
-
-**Acceptance Criteria**:
-- [ ] matplotlib import successful
-- [ ] pandas import successful
-- [ ] numpy import successful
-- [ ] Version numbers documented
-
----
-
-### 2. Create Basic tkinter Touch Test
+### 1. Install Arwes Framework and Dependencies
 **Estimate**: 30 minutes
-**Dependencies**: Task 1
-**Description**: Create minimal tkinter application to test touch responsiveness on reTerminal display. Test button presses, swipes, and multi-touch.
+**Dependencies**: React scaffolding complete
+**Status**: PENDING
+**Description**: Install Arwes framework, socket.io-client, axios, and chart library in React frontend.
 
 **Acceptance Criteria**:
-- [ ] Window displays in fullscreen on 720x1280 screen
-- [ ] Touch events register correctly
-- [ ] Button press response time measured (<100ms target)
-- [ ] Results documented
+- [ ] Arwes framework installed (@arwes/core, @arwes/animation)
+- [ ] socket.io-client installed for WebSocket
+- [ ] axios installed for REST API calls
+- [ ] Chart library selected and installed (Recharts or Chart.js)
+- [ ] Dependencies verified with npm start
 
 ---
 
-### 3. Design GPIO Pin Selector UI Mockup
+### 2. Create Basic Arwes Layout and Theme
 **Estimate**: 1 hour
-**Dependencies**: Task 2
-**Description**: Design UI layout for GPIO pin selection and mode configuration. Consider visual pinout diagram or list-based selection.
+**Dependencies**: Task 1
+**Status**: PENDING
+**Description**: Set up Arwes theming and create main application layout with cyberpunk styling.
 
 **Acceptance Criteria**:
-- [ ] Layout mockup created (sketch or code)
-- [ ] Pin selection method defined
-- [ ] Mode configuration UI designed (Input/Output/PWM)
-- [ ] Touch-optimized button sizes (minimum 44x44px)
+- [ ] ArwesThemeProvider configured
+- [ ] Main layout with Arwes Frame component
+- [ ] Cyberpunk color scheme applied
+- [ ] Touch-optimized spacing (44x44px minimum touch targets)
+- [ ] Portrait orientation support (720x1280)
+
+---
+
+### 3. Implement API Service Layer
+**Estimate**: 1 hour
+**Dependencies**: Task 1
+**Status**: PENDING
+**Description**: Create service layer for Flask API communication (REST + WebSocket).
+
+**Acceptance Criteria**:
+- [ ] axios configured for REST API calls
+- [ ] socket.io-client configured for WebSocket
+- [ ] API methods: getPins(), configurePin(), setPin(), readPin()
+- [ ] WebSocket listeners for real-time updates
+- [ ] Error handling and retry logic
 
 ---
 
 ## Medium Priority (This Week)
 
-### 4. Implement GPIO Pin State Display
+### 4. Build GPIO Pin Selector Component
 **Estimate**: 2 hours
-**Dependencies**: Task 3
-**Description**: Create real-time display showing current state of all GPIO pins (HIGH/LOW, mode, conflicts).
+**Dependencies**: Tasks 2, 3
+**Status**: PENDING
+**Description**: Create Arwes-styled pin selector component with visual grid or list view.
 
 **Acceptance Criteria**:
-- [ ] Visual representation of 26 usable pins
-- [ ] Real-time state updates
-- [ ] Color coding for states (HIGH/LOW/disabled)
-- [ ] GPIO 6 and 13 marked as unavailable
+- [ ] Arwes-styled pin grid/list component
+- [ ] Click to select pin (touch-optimized)
+- [ ] Display pin number, current mode, and state
+- [ ] Visual indicators for unavailable pins (GPIO 6, 13)
+- [ ] Responsive to 720x1280 portrait layout
 
 ---
 
-### 5. Build Digital Output Control Interface
-**Estimate**: 2 hours
-**Dependencies**: Task 4
-**Description**: Implement UI controls to set GPIO pins as outputs and toggle HIGH/LOW states.
-
-**Acceptance Criteria**:
-- [ ] Pin selection for output mode
-- [ ] Toggle button for HIGH/LOW
-- [ ] Safety warnings for current limits
-- [ ] Test with external LED circuit
-
----
-
-### 6. Build Digital Input Reading Interface
+### 5. Build Pin Configuration Panel
 **Estimate**: 2 hours
 **Dependencies**: Task 4
-**Description**: Implement UI to configure pins as inputs and display real-time readings with pull-up/pull-down configuration.
+**Status**: PENDING
+**Description**: Create configuration panel for selected pin (mode, pull resistors, PWM settings).
 
 **Acceptance Criteria**:
-- [ ] Pin selection for input mode
-- [ ] Pull-up/pull-down/floating options
-- [ ] Real-time value display
-- [ ] Test with button/switch circuit
+- [ ] Mode selector: Input/Output/PWM (Arwes buttons)
+- [ ] Pull resistor options for inputs (Up/Down/Off)
+- [ ] PWM frequency and duty cycle sliders (touch-optimized)
+- [ ] Apply/Reset buttons with Arwes styling
+- [ ] API integration to send configuration to backend
 
 ---
 
-### 7. Create PWM Control Interface
-**Estimate**: 3 hours
-**Dependencies**: Task 5
-**Description**: Add PWM configuration UI with frequency and duty cycle controls using pigpio library.
+### 6. Implement Real-Time Pin State Display
+**Estimate**: 2 hours
+**Dependencies**: Tasks 3, 4
+**Status**: PENDING
+**Description**: Create real-time display showing current pin states with WebSocket updates.
 
 **Acceptance Criteria**:
-- [ ] PWM-capable pins identified
-- [ ] Frequency control (Hz)
-- [ ] Duty cycle control (0-100%)
-- [ ] Test with LED brightness control
+- [ ] WebSocket connection to `/gpio` namespace
+- [ ] Real-time state updates (HIGH/LOW display)
+- [ ] Visual feedback (color coding with Arwes theme)
+- [ ] Connection status indicator
+- [ ] Auto-reconnect on connection loss
+
+---
+
+### 7. Add Digital Output Controls
+**Estimate**: 1.5 hours
+**Dependencies**: Tasks 5, 6
+**Status**: PENDING
+**Description**: Implement toggle controls for digital output pins.
+
+**Acceptance Criteria**:
+- [ ] Toggle button for HIGH/LOW (Arwes styled)
+- [ ] Immediate visual feedback
+- [ ] API call to `/api/pin/<id>/set`
+- [ ] Safety warnings for current limits (modal/tooltip)
+- [ ] Confirmation on multi-pin operations
 
 ---
 
 ## Lower Priority (Future)
 
-### 8. Implement Pin Configuration Persistence
-**Estimate**: 2 hours
-**Dependencies**: Tasks 5, 6, 7
-**Description**: Save/load pin configurations to JSON files for quick setup restoration.
+### 8. Add Data Visualization Chart
+**Estimate**: 3 hours
+**Dependencies**: Task 6
+**Status**: PENDING
+**Description**: Implement real-time chart for visualizing pin state changes over time.
 
 **Acceptance Criteria**:
-- [ ] Export current configuration
-- [ ] Load saved configuration
-- [ ] Configuration validation
-- [ ] Multiple profile support
+- [ ] Chart library integrated (Recharts/Chart.js)
+- [ ] Multi-pin timeline display
+- [ ] Zoom and pan controls (touch-friendly)
+- [ ] Configurable time window
+- [ ] Export data functionality (CSV/JSON)
 
 ---
 
-### 9. Add Multi-Pin Control
+### 9. Deploy to reTerminal and Test
 **Estimate**: 2 hours
-**Dependencies**: Task 5
-**Description**: Enable simultaneous control of multiple pins (grouped operations).
+**Dependencies**: Tasks 1-7
+**Status**: PENDING
+**Description**: Deploy Flask backend and React frontend to reTerminal, configure Chromium kiosk.
 
 **Acceptance Criteria**:
-- [ ] Select multiple pins
-- [ ] Apply state changes to group
-- [ ] Pattern generation (sequences)
-- [ ] Timing control
+- [ ] Backend deployed and running on reTerminal
+- [ ] Frontend build optimized for production
+- [ ] Chromium kiosk mode configured for fullscreen
+- [ ] Touch interaction tested on actual hardware
+- [ ] Performance benchmarks recorded
 
 ---
 
@@ -133,7 +151,25 @@
 
 ## Completed Today
 
-**None yet** (planning phase complete)
+### Backend Implementation (Flask + GPIO Abstraction)
+**Time**: ~3 hours
+**Files Created**:
+- `/Users/sevakavakians/PROGRAMMING/reterminal/backend/app.py`
+- `/Users/sevakavakians/PROGRAMMING/reterminal/backend/gpio_controller.py`
+- `/Users/sevakavakians/PROGRAMMING/reterminal/backend/requirements.txt`
+- `/Users/sevakavakians/PROGRAMMING/reterminal/backend/README.md`
+
+**Features Implemented**:
+- REST API endpoints for GPIO control
+- WebSocket support for real-time monitoring
+- Mock GPIO for development without hardware
+- Safety features (pin conflict detection, current limits)
+- Pull-up/pull-down resistor configuration
+- PWM control support
+
+### Frontend Scaffolding (React + TypeScript)
+**Time**: ~20 minutes
+**Status**: create-react-app complete, dependencies installing
 
 ## Notes
 

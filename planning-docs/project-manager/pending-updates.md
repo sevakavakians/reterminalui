@@ -6,28 +6,34 @@
 
 ## High Priority
 
-**None currently**
+### H1: Update ARCHITECTURE.md for Web Stack
+**Flagged**: 2026-01-05
+**Category**: Documentation Drift
+**Issue**: ARCHITECTURE.md still describes tkinter 4-layer architecture; project pivoted to Flask + React + Arwes
+**Recommendation**: Rewrite architecture diagram and component details for web stack
+**Impact**: Outdated documentation may cause confusion in future sessions
+**Status**: Pending
 
 ---
 
 ## Medium Priority
 
-### M1: Verify Python Dependencies Early
-**Flagged**: 2026-01-05
+### M1: Verify Arwes Framework Compatibility
+**Flagged**: 2026-01-05 (Updated)
 **Category**: Risk Mitigation
-**Issue**: Python 3.7.3 is older; matplotlib, pandas, numpy installation status unknown
-**Recommendation**: Execute Sprint 1 Task S1.1 as first action in next session
-**Impact**: Blocks all data visualization and logging work if libraries unavailable
+**Issue**: Arwes performance on reTerminal display unknown; touch responsiveness not tested
+**Recommendation**: Install Arwes, test basic components on development machine, then reTerminal
+**Impact**: May affect UI polish and performance if framework struggles on hardware
 **Status**: Pending
 
 ---
 
-### M2: Test tkinter Touch Performance Immediately After Dependency Verification
+### M2: Test WebSocket Real-Time Performance
 **Flagged**: 2026-01-05
 **Category**: Critical Path Risk
-**Issue**: tkinter touch responsiveness unknown; may require framework change
-**Recommendation**: Execute Sprint 1 Task S1.2 immediately after S1.1
-**Impact**: If inadequate, blocks all UI development (requires framework change)
+**Issue**: WebSocket latency for real-time GPIO monitoring unknown
+**Recommendation**: Test WebSocket updates with simulated high-frequency pin changes
+**Impact**: If latency too high, may need to optimize update frequency or batching
 **Status**: Pending
 
 ---
@@ -58,12 +64,23 @@
 
 ## Resolved
 
-**None yet**
+### R1: Verify Python Dependencies Early
+**Resolved**: 2026-01-05
+**Resolution**: Architectural pivot to Flask + React; Python dependencies for backend minimal (Flask, Flask-CORS, Flask-SocketIO)
+**Status**: Backend dependencies confirmed, visualization moved to frontend (chart libraries)
+
+---
+
+### R2: Test tkinter Touch Performance
+**Resolved**: 2026-01-05
+**Resolution**: Architectural pivot eliminated tkinter; using React + Arwes instead
+**Status**: No longer relevant; React touch events to be tested instead
 
 ---
 
 ## Metadata
 
-**Total Pending**: 4 (0 high, 2 medium, 1 low, 1 informational)
+**Total Pending**: 4 (1 high, 2 medium, 1 low, 0 informational)
+**Total Resolved**: 2
 **Last Updated**: 2026-01-05
-**Next Review**: After Sprint 1 Task S1.1 and S1.2 completion
+**Next Review**: After Arwes installation and initial frontend testing

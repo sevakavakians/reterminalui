@@ -6,9 +6,8 @@
 
 ## Time Estimation Patterns
 
-### Baseline Established
+### Phase 1: Research and Setup
 **Date**: 2026-01-05
-**Phase**: Phase 1 (Research and Setup)
 **Estimated**: N/A (planning phase)
 **Actual**: ~2 hours
 **Accuracy**: N/A (no prior estimate)
@@ -21,6 +20,34 @@
 - Documentation creation: 40 minutes
 
 **Notes**: Research and setup tasks completed efficiently with clear objectives
+
+---
+
+### Backend Implementation (Flask + GPIO Abstraction)
+**Date**: 2026-01-05
+**Estimated**: N/A (not pre-estimated)
+**Actual**: ~3 hours
+**Accuracy**: N/A
+
+**Breakdown**:
+- Flask REST API setup: 45 minutes
+- GPIO abstraction layer: 90 minutes
+- Mock GPIO implementation: 30 minutes
+- Testing and refinement: 15 minutes
+
+**Notes**: Backend development faster than expected; good familiarity with Flask evident
+
+**Velocity Insight**: ~2.5KB of well-structured code per hour (app.py + gpio_controller.py)
+
+---
+
+### Frontend Scaffolding (React + TypeScript)
+**Date**: 2026-01-05
+**Estimated**: N/A
+**Actual**: ~20 minutes
+**Accuracy**: N/A
+
+**Notes**: create-react-app handles most setup automatically; minimal configuration needed
 
 ---
 
@@ -69,6 +96,24 @@
 **Impact**: Clear roadmap, manageable scope per phase
 **Recommendation**: Review phase boundaries after Sprint 1 for accuracy
 
+#### Pattern 4: Backend-First Development
+**Observed**: 2026-01-05
+**Description**: Backend API completed before frontend, establishing clear contract
+**Impact**: Frontend can develop against stable API; parallel development possible
+**Recommendation**: Continue this pattern for other feature additions
+
+#### Pattern 5: Mock-Driven Development
+**Observed**: 2026-01-05
+**Description**: Mock GPIO implementation allows development without hardware
+**Impact**: Development velocity increased; testing safer; deployment cycles reduced
+**Recommendation**: Apply this pattern to future hardware integrations (ADC, sensors)
+
+#### Pattern 6: Early Framework Evaluation
+**Observed**: 2026-01-05
+**Description**: User evaluated UI frameworks (Arwes vs LCARS vs tkinter) before deep development
+**Impact**: Major architectural pivot happened early, minimizing rework
+**Recommendation**: For future major components, evaluate alternatives before deep implementation
+
 ---
 
 ## Task Type Time Estimates
@@ -94,25 +139,46 @@
 
 ## Assumption vs. Reality Tracking
 
-### Assumption 1: tkinter Available
-**Assumed**: 2026-01-05
-**Verified**: 2026-01-05 (confirmed in library check)
-**Status**: ✓ Correct
+### Assumption 1: tkinter for UI Framework
+**Assumed**: 2026-01-05 (initial planning)
+**Reality**: Flask + React + Arwes web architecture chosen
+**Verified**: 2026-01-05 (user decision after framework evaluation)
+**Status**: ✗ Incorrect - **Major architectural pivot**
+**Impact**: Complete task list revision, all UI development approach changed
+**Discovery Method**: User evaluated options and selected Arwes cyberpunk aesthetic
+**Lesson**: Early framework evaluation critical; assumption validated via user choice
 
-### Assumption 2: GPIO 6 and 13 Unavailable
+### Assumption 2: No Remote Control Needed
+**Assumed**: 2026-01-05 (defer to Phase 6)
+**Reality**: Web architecture naturally supports optional network access
+**Verified**: 2026-01-05 (Flask REST API implementation)
+**Status**: ✗ Incorrect - Remote access available as side-effect
+**Impact**: Enhanced flexibility without architectural cost
+**Discovery Method**: Web stack inherently network-capable
+**Lesson**: Architecture choice can provide features "for free"
+
+### Assumption 3: Hardware Required for All Development
+**Assumed**: 2026-01-05 (reTerminal access needed)
+**Reality**: Mock GPIO enables local development without hardware
+**Verified**: 2026-01-05 (MockGPIO implementation)
+**Status**: ✗ Incorrect - Development possible locally
+**Impact**: Faster development velocity, safer testing
+**Discovery Method**: Implemented GPIO abstraction layer with mock support
+**Lesson**: Abstraction layers enable development environment flexibility
+
+### Assumption 4: GPIO 6 and 13 Unavailable
 **Assumed**: 2026-01-05 (based on reTerminal wiki)
 **Verified**: 2026-01-05 (documented in RETERMINAL_INFO.md)
 **Status**: ✓ Correct
 
-### Assumption 3: matplotlib/pandas/numpy Available
-**Assumed**: 2026-01-05
-**Verified**: NOT YET (Sprint 1 Task S1.1)
-**Status**: ⚠ Pending verification
-
-### Assumption 4: tkinter Touch Performance Adequate
-**Assumed**: 2026-01-05
-**Verified**: NOT YET (Sprint 1 Task S1.2)
-**Status**: ⚠ Pending verification (HIGH RISK)
+### Assumption 5: matplotlib/pandas/numpy Required
+**Assumed**: 2026-01-05 (for data visualization)
+**Reality**: Visualization moved to frontend (React chart libraries)
+**Verified**: 2026-01-05 (architectural pivot)
+**Status**: ✗ Incorrect - Not needed with web architecture
+**Impact**: Simpler backend dependencies, visualization on frontend
+**Discovery Method**: Web stack separation of concerns
+**Lesson**: Architectural changes can eliminate dependencies
 
 ---
 

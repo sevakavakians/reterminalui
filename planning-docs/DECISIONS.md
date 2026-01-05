@@ -18,39 +18,47 @@ Each decision includes:
 
 ---
 
-## D001: Use tkinter for UI Framework
+## D001: Use Web-Based Architecture (Flask + React + Arwes)
 
-**Date**: 2026-01-05
-**Decision**: Use tkinter as the primary UI framework for initial implementation
-**Status**: Tentative (pending touch performance testing)
+**Date**: 2026-01-05 (Updated after architectural pivot)
+**Decision**: Use Flask backend with React + TypeScript + Arwes cyberpunk UI framework
+**Status**: Confirmed (user selected after UI framework comparison)
 
 **Rationale**:
-- Pre-installed on reTerminal (no additional dependencies)
-- Lightweight and sufficient for initial requirements
-- Familiar Python standard library
-- Direct hardware access (no web server needed)
-- Good documentation and community support
+- Modern, polished UI with cyberpunk aesthetic (Arwes framework)
+- Better separation of concerns (backend API vs frontend UI)
+- Touch-optimized React components
+- Real-time updates via WebSocket
+- Network access capability (optional, not required)
+- Extensive component ecosystem
+- Better development experience with TypeScript
 
 **Alternatives Considered**:
-1. **PyQt5/PySide2**
-   - Pros: More features, better touch support, modern widgets
-   - Cons: Large dependencies, installation complexity, licensing considerations
+1. **tkinter (original plan)**
+   - Pros: Lightweight, no dependencies, direct hardware access
+   - Cons: Limited styling, basic UI, uncertain touch performance
 
-2. **Kivy**
-   - Pros: Designed for touch interfaces, mobile-friendly
-   - Cons: Unfamiliar, learning curve, limited documentation
+2. **PyQt5/PySide2 with LCARS theme**
+   - Pros: Native performance, LCARS aesthetic available
+   - Cons: Heavy dependencies, licensing complexity
 
-3. **Web-based (Flask + HTML/JS)**
-   - Pros: Cross-platform, modern UI, remote access
-   - Cons: Network overhead, more complex architecture, resource heavy
+3. **Kivy with custom cyberpunk theme**
+   - Pros: Touch-optimized, mobile-friendly
+   - Cons: Unfamiliar, learning curve, limited theming
 
-**Confidence Level**: Medium
+**User Choice**: Arwes cyberpunk aesthetic selected over LCARS or custom designs
 
-**Impact**: Affects entire UI layer, development velocity, and user experience
+**Confidence Level**: High
 
-**Reversibility**: Moderate (UI layer is isolated, but significant rework required)
+**Impact**: Complete architecture change - backend API layer, frontend framework, deployment model
 
-**Revisit Condition**: If touch testing (Sprint 1, Task S1.2) shows poor performance (<100ms latency), reconsider PyQt5
+**Reversibility**: Difficult (major architectural decision, significant work invested)
+
+**Implementation Details**:
+- Backend: Flask with REST API + WebSocket support
+- Frontend: React + TypeScript + Arwes UI framework
+- Display: Chromium kiosk mode for fullscreen touch UI
+- GPIO: Python backend with abstraction layer (RPi.GPIO, gpiozero, pigpio)
 
 ---
 
@@ -300,30 +308,101 @@ Each decision includes:
 
 ---
 
-## D010: No Remote Control in Initial Version
+## D010: Network-Capable Architecture (Optional Remote Access)
 
-**Date**: 2026-01-05
-**Decision**: Local touchscreen UI only; no network remote control initially
-**Status**: Confirmed (defer to Phase 6)
+**Date**: 2026-01-05 (Revised with web architecture)
+**Decision**: Web-based architecture supports network access, but not required for primary use case
+**Status**: Confirmed
 
 **Rationale**:
-- Reduces scope for initial delivery
-- Simpler security model (no network exposure)
-- Focuses on core use case (on-device probing)
-- Can add later as enhancement
+- Flask backend provides REST API by default
+- Chromium kiosk mode runs on localhost (127.0.0.1)
+- Can optionally expose network interface (0.0.0.0) for remote access
+- No security complexity if kept on localhost
+- Enables future remote monitoring without architectural changes
 
-**Alternatives Considered**:
-1. **REST API from day one**
-   - Pros: Remote monitoring/control
-   - Cons: Security complexity, increased scope, testing overhead
+**Deployment Options**:
+1. **Local-only (primary)**: Flask on 127.0.0.1, Chromium kiosk accessing localhost
+2. **Network-accessible (optional)**: Flask on 0.0.0.0, accessible from LAN
+
+**Security Approach**:
+- Default: localhost only
+- Optional: Basic authentication if network exposed
+- Future: Token-based auth, HTTPS (Phase 6)
 
 **Confidence Level**: High
 
-**Impact**: Architecture (no web server needed), security considerations
+**Impact**: Architecture enables flexibility without requiring network exposure
 
-**Reversibility**: Easy (can add REST API layer in Phase 6 without core changes)
+**Reversibility**: Easy (deployment configuration change only)
 
-**Future Enhancement**: REST API + web UI for remote monitoring (Phase 6)
+**Implementation**: Primary use case remains on-device touchscreen UI via Chromium kiosk
+
+---
+
+## D011: Flask Backend with Mock GPIO Development Support
+
+**Date**: 2026-01-05
+**Decision**: Implement GPIO abstraction layer with mock GPIO for development on non-Pi systems
+**Status**: Confirmed (Implemented)
+
+**Rationale**:
+- Enables development and testing on macOS/Windows without hardware
+- Reduces deployment cycles (test locally, deploy to reTerminal only when ready)
+- Prevents accidental hardware damage during development
+- Mock GPIO simulates pin states for UI development
+
+**Implementation**:
+- `GPIOController` class with abstraction layer
+- Automatic detection: uses RPi.GPIO on Raspberry Pi, mock on other systems
+- Mock GPIO tracks pin states in memory
+- Safety features: pin conflict detection, current limit warnings
+
+**Features Implemented**:
+- Pin configuration (input/output/PWM modes)
+- Digital read/write operations
+- PWM control (frequency, duty cycle)
+- Pull-up/pull-down resistor configuration
+- Pin conflict detection (GPIO 6, 13 reserved)
+
+**Confidence Level**: High
+
+**Impact**: Development velocity (can work without hardware), code safety
+
+**Reversibility**: Easy (abstraction layer design allows swapping implementations)
+
+**Status**: Backend complete (`backend/app.py`, `backend/gpio_controller.py`)
+
+---
+
+## D012: REST API + WebSocket Dual Interface
+
+**Date**: 2026-01-05
+**Decision**: Provide both REST API (for control) and WebSocket (for real-time monitoring)
+**Status**: Confirmed (Implemented in backend)
+
+**Rationale**:
+- REST API: Stateless, simple for pin configuration and control
+- WebSocket: Real-time bidirectional updates for monitoring
+- Best of both patterns for different use cases
+
+**API Design**:
+- REST endpoints: `/api/pins`, `/api/pin/<id>/configure`, `/api/pin/<id>/set`, etc.
+- WebSocket namespace: `/gpio` for real-time pin state broadcasts
+
+**Implementation Details**:
+- Flask-CORS for cross-origin support (development)
+- Flask-SocketIO for WebSocket
+- JSON response format throughout
+- Error handling with appropriate HTTP status codes
+
+**Confidence Level**: High
+
+**Impact**: Frontend development (API contract), real-time UI updates
+
+**Reversibility**: Moderate (API contract affects frontend)
+
+**Status**: Backend API complete, WebSocket implemented
 
 ---
 
