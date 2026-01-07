@@ -1,0 +1,19 @@
+[Unit]
+Description=reTerminal GPIO Control (Qt5)
+After=graphical.target
+Wants=graphical.target
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+WorkingDirectory=/home/pi/qt5-app/src
+ExecStartPre=/bin/sleep 5
+ExecStartPre=/bin/bash -c 'DISPLAY=:0 xinput disable $(DISPLAY=:0 xinput list | grep gpio_keys | sed -n "s/.*id=\\([0-9]\\+\\).*/\\1/p") || true'
+ExecStart=/usr/bin/python3 /home/pi/qt5-app/src/main.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

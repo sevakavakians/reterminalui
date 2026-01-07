@@ -1,0 +1,1 @@
+- Remember that I cannot refresh the page because there is no keyboard attached to this device.

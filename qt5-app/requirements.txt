@@ -1,0 +1,14 @@
+# reTerminal GPIO Control - Qt5 Application
+# Python dependencies
+
+# Note: PySide2 is already installed system-wide on reTerminal (5.11.2)
+# No need to install via pip
+
+# GPIO control for Raspberry Pi
+RPi.GPIO>=0.7.1
+
+# Sensor libraries for reTerminal
+seeed-python-reterminal>=0.5
+
+# Input device event handling
+evdev>=1.6.0
