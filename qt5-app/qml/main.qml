@@ -1,13 +1,22 @@
 import QtQuick 2.9
+import QtQuick.Window 2.2
 
-Rectangle {
+Window {
     id: root
     width: 1280
     height: 720
-    color: "#0a0e27"
+    visible: true
+    title: "reTerminal GPIO Control"
+    flags: Qt.FramelessWindowHint
 
     // Current screen state
     property string currentScreen: "gpio"
+
+    // Background rectangle
+    Rectangle {
+        anchors.fill: parent
+        color: "#0a0e27"
+    }
 
     // Listen for screen change signals from Python
     Connections {
@@ -36,11 +45,13 @@ Rectangle {
 
             // Title
             Text {
-                text: currentScreen === "gpio" ? "reTerminal GPIO" : "reTerminal SENSORS"
+                text: currentScreen === "gpio" ? "reTerminal GPIO" :
+                      currentScreen === "sensors" ? "reTerminal SENSORS" :
+                      "reTerminal CONTROL"
                 font.pixelSize: 32
                 font.bold: true
                 color: "#00f3ff"
-                width: parent.width - 300
+                width: parent.width - 450
                 anchors.verticalCenter: parent.verticalCenter
             }
 
@@ -98,6 +109,31 @@ Rectangle {
                         }
                     }
                 }
+
+                Rectangle {
+                    width: 150
+                    height: 40
+                    color: currentScreen === "control" ? "#00f3ff" : "transparent"
+                    border.color: "#00f3ff"
+                    border.width: 2
+                    radius: 4
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "CONTROL (F3)"
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: currentScreen === "control" ? "#000" : "#00f3ff"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            currentScreen = "control"
+                            appController.handleButtonEvent("F3", "pressed")
+                        }
+                    }
+                }
             }
         }
     }
@@ -134,6 +170,18 @@ Rectangle {
                 NumberAnimation { duration: 200 }
             }
         }
+
+        // Control Screen
+        ControlScreen {
+            id: controlScreen
+            anchors.fill: parent
+            visible: currentScreen === "control"
+            opacity: visible ? 1.0 : 0.0
+
+            Behavior on opacity {
+                NumberAnimation { duration: 200 }
+            }
+        }
     }
 
     // Footer
@@ -149,7 +197,7 @@ Rectangle {
 
         Text {
             anchors.centerIn: parent
-            text: "Press F1 for GPIO | Press F2 for Sensors | reTerminal GPIO Control v1.0"
+            text: "Press F1 for GPIO | Press F2 for Sensors | Press F3 for Control | reTerminal GPIO Control v1.0"
             font.pixelSize: 12
             color: "#666"
         }

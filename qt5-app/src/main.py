@@ -57,7 +57,7 @@ class AppController(QObject):
 
         print(f"[AppController] Button {button} pressed")
 
-        # F1 = GPIO screen, F2 = Sensors screen
+        # F1 = GPIO screen, F2 = Sensors screen, F3 = Control screen
         if button == 'F1':
             print("[AppController] Switching to GPIO screen")
             self._current_screen = 'gpio'
@@ -66,6 +66,10 @@ class AppController(QObject):
             print("[AppController] Switching to Sensors screen")
             self._current_screen = 'sensors'
             self.screenChanged.emit('sensors')
+        elif button == 'F3':
+            print("[AppController] Switching to Control screen")
+            self._current_screen = 'control'
+            self.screenChanged.emit('control')
 
     @Slot(result=str)
     def getCurrentScreen(self):
